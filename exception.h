@@ -11,19 +11,19 @@
 
 namespace except
 {
-	class ExceptionBase :public std::exception
+	class exception_base :public std::exception
 	{
 	public:
 		virtual int getErrorCode() const { return 0; };
 		virtual void rethrow() const {};
-		virtual ~ExceptionBase() {}
+		virtual ~exception_base() {}
 	};
 
-#define DECLARE_EXCEPTION(ClassName)	\
-	class ClassName : public ExceptionBase												\
+#define DECLARE_EXCEPTION(class_name)	\
+	class class_name : public exception_base											\
 	{																					\
 	public:																				\
-		ClassName(const std::string& error_msg, int error_code,							\
+		class_name(const std::string& error_msg, int error_code,						\
 			const std::string& src_name, int src_line)									\
 			:error_msg_(error_msg),error_code_(error_code)								\
 		{																				\
@@ -32,9 +32,9 @@ namespace except
 				<< src_name << ":" << src_line << ". " << error_msg_;					\
 			error_msg_ = oss.str();														\
 		}																				\
-		ClassName(const std::string& error_msg, int error_code)							\
+		class_name(const std::string& error_msg, int error_code)						\
 			:error_msg_(error_msg), error_code_(error_code) {}							\
-		ClassName(const std::string& error_msg)											\
+		class_name(const std::string& error_msg)										\
 			:error_msg_(error_msg), error_code_(0) {}									\
 		int getErrorCode() const { return error_code_; }								\
 		const char* what() const noexcept { return error_msg_.c_str(); }				\
