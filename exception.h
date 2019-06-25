@@ -14,7 +14,7 @@ namespace except
 	class exception_base :public std::exception
 	{
 	public:
-		virtual int getErrorCode() const { return 0; };
+		virtual int get_error_code() const { return 0; };
 		virtual void rethrow() const {};
 		virtual ~exception_base() {}
 	};
@@ -32,28 +32,32 @@ namespace except
 				<< src_name << ":" << src_line << ". " << error_msg_;					\
 			error_msg_ = oss.str();														\
 		}																				\
+		class_name(const std::string& error_msg,										\
+			const std::string& src_name, int src_line)									\
+			:error_msg_(error_msg)														\
+		{																				\
+			std::ostringstream oss;														\
+			oss << "Exception occured at "												\
+				<< src_name << ":" << src_line << ". " << error_msg_;					\
+			error_msg_ = oss.str();														\
+		}																				\
 		class_name(const std::string& error_msg, int error_code)						\
 			:error_msg_(error_msg), error_code_(error_code) {}							\
 		class_name(const std::string& error_msg)										\
-			:error_msg_(error_msg), error_code_(0) {}									\
-		int getErrorCode() const { return error_code_; }								\
+			:error_msg_(error_msg) {}													\
+		int get_error_code() const { return error_code_; }								\
 		const char* what() const noexcept { return error_msg_.c_str(); }				\
 		void rethrow() const{ throw *this; }											\
 	private:																			\
-		int error_code_;																\
 		std::string error_msg_;															\
+		int error_code_= 0;																\
 	}
 
 	constexpr int BASE_ERROR = -200000000;
 
 	//define your own exception here...........................
-
-	constexpr int COMMON = BASE_ERROR - 1;
-	DECLARE_EXCEPTION(CommonException);
-	constexpr int SQL_EMPTY = BASE_ERROR - 2;
-	DECLARE_EXCEPTION(SqlEmptyException);
-	constexpr int SQL_ERROR = BASE_ERROR - 3;
-	DECLARE_EXCEPTION(SqlErrorException);
+	constexpr int CONNECT_DB_ERROR = BASE_ERROR - 1;
+	DECLARE_EXCEPTION(connect_db_exception);
 	//DECLARE_EXCEPTION(NotFoundRServerException);//CSErrorNotFoundRServer = -2146435068
 	//DECLARE_EXCEPTION(NotFoundTServerException);//CSErrorNotFoundTServer = -2146435067
 	//DECLARE_EXCEPTION(NoRecordPlanException);//CSErrorNotFoundRecordPlan = -2146435066
